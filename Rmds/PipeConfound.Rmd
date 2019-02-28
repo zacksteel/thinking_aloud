@@ -136,7 +136,7 @@ So how to deal with this?
 
 
 
-
+More on different types of confounds: https://www.youtube.com/watch?v=l_7yIUqWBmE
 
 
 
