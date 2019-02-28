@@ -54,14 +54,20 @@ Straight forward enough. But of course our main question here is how does fire s
 
 ![](PipeConfound_files/figure-markdown_github/unnamed-chunk-9-1.png)
 
-What happened in the multivariate model with both burn severity (x) and canopy cover (y)!? The effect of burn severity dissapeared. I've recently heard this called a "pipe" confound. Basically when you condition on canopy cover, it "blocks the pipe" to burn severity. Or put another way, once the model knows the relationship between the direct effect of canopy cover and warbler abundance, there is nothing left for it to learn from the indirect effect of burn severity.
+What happened in the multivariate model with both burn severity (x) and canopy cover (y)!? The effect of burn severity dissapeared. I've recently heard this called a "pipe" confound, or "post-treatment bias". Basically when you condition on canopy cover, it "blocks the pipe" to burn severity. Or put another way, once the model knows the relationship between the direct effect of canopy cover and warbler abundance, there is nothing left for it to learn from the indirect effect of burn severity.
 
 This can be really problematic when trying to infer causal relationships, and it isn't always so obvious as this so we might not realize something has gone wrong and move forward with the wrong interpretation of the model.
 
-So how to deal with this?
+Of course, sometimes you need to include covariates, and omitting certain variables can lead to other types of counfounds. This can happen when a covariate influences both the effect of interest and the outcome. For example, elevation (a) influences both canopy cover (y) and hermit warbler abundance (z). In this case, you want to condition (model) on elevation in order to get an unbiased estiamte of the effect of canopy cover on warblers.
+
+![](PipeConfound_files/figure-markdown_github/unnamed-chunk-10-1.png)
+
+So how to deal with the pipe confound?
 
 -   Analytical approaches
     -   Omit confounding variable(s)
     -   PCA-type approaches
     -   Structural equation models?
 -   Explaining this a reviewer that says you *have to include canopy cover!*
+
+More on different types of confounds: <https://www.youtube.com/watch?v=l_7yIUqWBmE>
