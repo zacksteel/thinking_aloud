@@ -1,6 +1,8 @@
 ---
 title: "Lab meeting tangent"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -38,7 +40,7 @@ Normally we don't know the causal mechanism for sure, but we can make up data he
 Let's say that x is burn severity, y is canopy cover, and z is the abundance rate of the Hermit Warbler (a late-seral species). We've decided that burn severity reduces basal area `b1 = -1`, and that the warblers like areas with high basal area `b2 = 1`.  
 
 ```{r}
-include_graphics("Images/HEWA.jpg")
+include_graphics("../Images/HEWA.jpg")
 ```
 
 ```{r, echo=F}
