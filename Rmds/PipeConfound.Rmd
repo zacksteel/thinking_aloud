@@ -1,0 +1,140 @@
+---
+title: "Lab meeting tangent"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE)
+knitr::opts_knit$set(root.dir = "..")
+```
+
+**How to deal with "Pipe" confounds statistically, and how best to communicate direct and indirect effects?**  
+
+Often we are interested in the indirect effect of some process or environmental variable (X) on a measured outcome (Z), where we also have data on some intermediate effect (Y). Another way to say this is that the effect of X on Z is mediated by Y.  
+
+```{r, echo=FALSE}
+library(dagitty)
+library(ggplot2)
+library(GGally)
+library(rethinking)
+library(knitr)
+
+dag1 <- dagitty( 'dag {
+    x [pos="0,0"]
+    y [pos="0,1"]
+    z [pos="0,2"]
+
+    x -> y
+    y -> z
+}')
+
+plot( dag1 )
+```
+
+A common example of this in the great(er) Safford lab is when we have data on burn severity (x), overstory structure (y), and a measure of biodiversity (z). We suspect that fire severity influences biodiversity *because* it changes overstory structure, but we want to know what the disturbance effect is rather than, or in addition to, the the change in structure.  
+
+Normally we don't know the causal mechanism for sure, but we can make up data here to force such a causal relationship (with a little bit of noise added for good measure).  
+
+Let's say that x is burn severity, y is canopy cover, and z is the abundance rate of the Hermit Warbler (a late-seral species). We've decided that burn severity reduces basal area `b1 = -1`, and that the warblers like areas with high basal area `b2 = 1`.  
+
+```{r}
+include_graphics("Images/HEWA.jpg")
+```
+
+```{r, echo=F}
+set.seed(1)
+n <- 100 
+x <- seq(0,100, length.out = n)
+
+a1 <- 100
+b1 <- -1
+
+y <- a1 + x*b1 + rnorm(n, sd = 10)
+
+a2 <- 0
+b2 <- 1
+z <- a2 + y*b2 + rnorm(n, sd = 10) 
+
+d <- data.frame(x, y, z)
+
+ggpairs(d)
+```
+
+
+
+We can run simple linear models and return the parameters we defined. I've added some randomness so it's not perfect, but very close.  
+
+```{r,echo=T}
+m1 <- lm(y ~ x, d)
+precis(m1)
+
+m2 <- lm(z ~ y, d)
+precis(m2)
+```
+
+```{r, echo=F}
+ggplot(d, aes(x, y)) +
+  geom_point() + 
+  geom_abline(intercept = coef(m1)[1], slope = coef(m1)["x"],
+              color = "slateblue", size = 2) +
+  ylab("Canopy cover (y)") + xlab("Burn severity (x)") +
+      ggtitle("Model m1")
+
+ggplot(d, aes(y, z)) +
+  geom_point() + 
+  geom_abline(intercept = coef(m2)[1], slope = coef(m2)["y"],
+              color = "slateblue", size = 2) +
+  ylab("Warblers (z)") + xlab("Canopy cover (y)") +
+      ggtitle("Model m2")
+```
+
+Straight forward enough. But of course our main question here is how does fire severity affect warber abundance. We could fit this as a bivariate regression `m3: z ~ x`, or we may want to also include canopy cover, because of course we know this matters `m4: z ~ y + x`. Our expectation is that burn severity has a negative effect of warblers because they like dense forests that haven't burned. We see this result from these two models:  
+
+```{r}
+m3 <- lm(z ~ x, d)
+precis(m3)
+d$pred3 <- predict(m3)
+```
+
+```{r, echo = F}
+ggplot(d, aes(x, z)) +
+  geom_point() + 
+  geom_abline(intercept = coef(m3)[1], slope = coef(m3)["x"],
+              color = "slateblue", size = 2) +
+  ylab("Warblers (z)") + xlab("Burn severity (x)") +
+  ggtitle("Model m3")
+```
+
+```{r}
+m4 <- lm(z ~ y + x, d)
+precis(m4)
+
+```
+
+```{r, echo = F}
+ggplot(d, aes(x, z)) +
+  geom_point() + 
+  geom_abline(intercept = coef(m4)[1], slope = coef(m4)["x"],
+              color = "slateblue", size = 2) +
+  ylab("Warblers (z)") + xlab("Burn severity (x)") +
+  ggtitle("Model m4")
+```
+
+What happened in the multivariate model with both burn severity (x) and canopy cover (y)!? The effect of burn severity dissapeared. I've recently heard this called a "pipe" confound. Basically when you condition on canopy cover, it "blocks the pipe" to burn severity. Or put another way, once the model knows the relationship between the direct effect of canopy cover and warbler abundance, there is nothing left for it to learn from the indirect effect of burn severity.  
+
+This can be really problematic when trying to infer causal relationships, and it isn't always so obvious as this so we might not realize something has gone wrong and move forward with the wrong interpretation of the model.  
+
+So how to deal with this?  
+
+* Analytical approaches  
+    + Omit confounding variable(s)  
+    + PCA-type approaches  
+    + Structural equation models?  
+* Explaining this a reviewer that says you *have to include canopy cover!*  
+
+
+
+
+
+
+
