@@ -12,7 +12,7 @@ knitr::opts_knit$set(root.dir = "..")
 
 **How to deal with "Pipe" confounds statistically, and how best to communicate direct and indirect effects?**  
 
-Often we are interested in the indirect effect of some process or environmental variable (X) on a measured outcome (Z), where we also have data on some intermediate effect (Y). Another way to say this is that the effect of X on Z is mediated by Y.  
+Often we are interested in the indirect effect of some process or environmental variable (s) on a measured outcome (w), where we also have data on some intermediate effect (c). Another way to say this is that the effect of X on Z is mediated by Y.  
 
 ```{r, echo=FALSE}
 library(dagitty)
