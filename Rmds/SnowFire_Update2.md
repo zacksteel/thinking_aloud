@@ -30,7 +30,7 @@ Data Availability
 
 We are using Nasa's 3m lidar-derived [ASO data](https://nsidc.org/data/aso_3m_sd). Lidar fights have occurred starting in 2013, although they improved their equipment in 2014, so let's start that year. They have conducted flights across a number of basins, but we'll focus on the Merced and Kings basins since these have had the closest to natural fire regimes and likely most 'natural' distributions of gap types. If we want more temporal and/or spatial replication we could look at other basins, but we would need to wrangle a lot of data, and data requests haven't been rapid so far.
 
-![Sierra Nevada basins surveyed by ASO](../../Figures/ASO_Flight_Map.bmp)
+![Sierra Nevada basins surveyed by ASO](ASO_Flight_Map.bmp)
 
 Currently we have data for 2014 from the Merced basin, and a request in for all other flights in the Merced and Kings basins.
 
