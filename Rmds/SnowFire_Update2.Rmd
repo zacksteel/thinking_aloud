@@ -3,16 +3,18 @@ title: "SnowFire Update 2"
 author: "Zack Steel"
 date: '`r format(Sys.Date(), "%Y-%m-%d")`'
 bibliography: [../../references.bib]
-output:
-  rmarkdown::github_document:
-  html_notebook:
-    code_folding: hide
-    toc: no
+# output:
+#   html_notebook:
+#     code_folding: hide
+#     toc: no
+output: rmarkdown::github_document
 ---
 
 # Overview 
 
-This document is meant to serve as an update/check-in for the "Snow Fire" project, as well as just a way for me to organize my thoughts. At this point, this is heavy on the thinking out loud and thought-oranization, but in the future (and once we get all the data), I'll focus more summarizing analysis and results. Please let me know if you have any comments/suggests.  
+This document is meant to serve as an update/check-in for the "Snow Fire" project, as well as just a way for me to organize my thoughts. Previously I was approaching this project using the more available 50m resolution snow water equivalent data collected by ASO. However, I'm switching to a more fine-scale approach following feedback from others and some concerns about biased results using the coarser data.  
+
+At this point, this new approach is heavy on the thinking out loud and thought-organization, but in the future (and once we get all the data), I'll focus more summarizing analysis and results. Please let me know if you have any comments/suggests.  
 
 # Motivation  
 
@@ -75,7 +77,7 @@ ggplot(d, aes(x = jday, y = year, color = basin, shape = factor(pocess))) +
 
 There are (at least) two ways to approach this analysis using 3m ASO data:  
 
-  1. At the gap level: How does gap size and shape influence mean snow depth and snow dissapearance date? Could apply the SDC metric here as well.  
+  1. At the gap level: How does gap size and shape influence mean snow depth and snow disappearance date? Could apply the SDC metric here as well.  
  
   2. At the pixel level: How does snow depth and presence vary with distance to patch edge? Do pixels in shaded edges hold snow longer?  
  
