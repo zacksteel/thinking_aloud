@@ -1,0 +1,104 @@
+---
+title: "SnowFire Update 2"
+author: "Zack Steel"
+date: '`r format(Sys.Date(), "%Y-%m-%d")`'
+bibliography: [../../references.bib]
+output:
+  rmarkdown::github_document:
+  html_notebook:
+    code_folding: hide
+    toc: no
+---
+
+# Overview 
+
+This document is meant to serve as an update/check-in for the "Snow Fire" project, as well as just a way for me to organize my thoughts. At this point, this is heavy on the thinking out loud and thought-oranization, but in the future (and once we get all the data), I'll focus more summarizing analysis and results. Please let me know if you have any comments/suggests.  
+
+# Motivation  
+
+ 1. Snow depth varies across forested areas, in part as a function of tree cover, which influences both snow interception and ablation. This likely varies both under canopy vs. in forest gaps, but also with gap internal distance from gap edge, and consequently with gap size and shape.  
+ 
+ 2. Broad management strategies have resulted in differences in forest coverage and configuration across the region. Specifically, timber harvest history and fire suppression vs. managed wildfire, determine the size, shape and location of forest gaps (as well as the size and degree of shading of edge trees).  
+
+    a) Fire regimes are changing with burns creating increasingly large forest gaps. Also fires at higher elevations are becoming more common.  
+ 
+    b) In contrast to reference conditions, within fire-suppressed landscapes gaps are likely fewer and smaller where fire has been absent, and larger where recent fires have occurred.  
+
+ 3. The climate is changing which affects both the magnitude of the snow pack at different elevations and timing of snow-melt. Also climate change is leading to higher densities of high-elevation forest.  
+ 
+ 4. The amount of snow and the timing of its melt is important for a lot of things like life, almonds, and swimming pools.  
+ 
+
+# Data Availability
+
+We are using Nasa's 3m lidar-derived [ASO data](https://nsidc.org/data/aso_3m_sd). Lidar fights have occurred starting in 2013, although they improved their equipment in 2014, so let's start that year. They have conducted flights across a number of basins, but we'll focus on the Merced and Kings basins since these have had the closest to natural fire regimes and likely most 'natural' distributions of gap types. If we want more temporal and/or spatial replication we could look at other basins, but we would need to wrangle a lot of data, and data requests haven't been rapid so far.     
+
+![Sierra Nevada basins surveyed by ASO](../../Figures/ASO_Flight_Map.bmp)  
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE)
+knitr::opts_knit$set(root.dir = "../..")
+
+library(tidyverse)
+library(lubridate)
+library(plotly)
+library(citr)
+library(knitr)
+```
+
+
+Currently we have data for 2014 from the Merced basin, and a request in for all other flights in the Merced and Kings basins.  
+
+```{r}
+d <- read.csv("data/reference/snowdepth3m_avail.csv") %>%
+    mutate(date = as.character(date),
+         date = as.Date(date, "%Y%m%d"),
+         year = year(date), #year
+         jday = as.integer(format(date, '%j')))
+
+## Plot flights across years and day
+ggplot(d, aes(x = jday, y = year, color = basin, shape = factor(pocess))) +
+  geom_point(size = 4) +
+  scale_shape_manual(values = c(21, 19),
+                     labels = c("Requested","Obtained"),
+                     name = "Data Status") +
+  scale_color_brewer(palette = "Dark2",
+                     labels = c("Kings", "Merced"),
+                     name = "Basin") +
+  xlab("Julian Day") + ylab(NULL)
+
+
+```
+ 
+
+# Questions  
+
+There are (at least) two ways to approach this analysis using 3m ASO data:  
+
+  1. At the gap level: How does gap size and shape influence mean snow depth and snow dissapearance date? Could apply the SDC metric here as well.  
+ 
+  2. At the pixel level: How does snow depth and presence vary with distance to patch edge? Do pixels in shaded edges hold snow longer?  
+ 
+Either way we'd want to incorporate elevation, aspect, date, and snow-year to ask the follow if possible:  
+ 
+ 3. Do this relationship depend upon climate (both inter-annual and across elevation)?  
+ 
+
+# Relevant Literature  
+
+There are clearly more than is listed below. If there are any important omissions at this point, please let me know.  
+
+
+ - Related to fire effects on forest gaps/patches: [@steelChangingLandscapeWildfire2018; @stevensChangingSpatialPatterns2017; @collinsAlternativeCharacterizationForest2017; @boisrameManagedWildfireEffects2017]  
+ 
+ - Lidar measurements of snow depth: [@harpoldLiDARderivedSnowpackData2014; @painterAirborneSnowObservatory2016]  
+ 
+ - Snow and tree cover: [@harpoldChangesSnowAccumulation2014; @currierSnowDepthVariability2018; @lundquistLowerForestDensity2013; @stevensScaledependentEffectsPostfire2017]  
+ 
+ 
+***  
+
+# Bibliography  
+
+  
+
