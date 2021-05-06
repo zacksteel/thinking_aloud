@@ -1,0 +1,36 @@
+---
+title: "Text chunk folding"
+author: "Zack Steel"
+date: '2021-05-06'
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+<style>
+.fold-btn { float: right; }
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $(".fold").prepend("<button class=\"fold-btn\">Unfold</button>");
+  $(".fold").children("code").toggle();
+  $(".fold-btn").on("click", function() {
+    if($(this).text() === "Fold") {
+      $(this).text("Unfold");
+    } else {
+      $(this).text("Fold");
+    }
+    $(this).next("code").toggle("linear");
+  })
+});
+</script>
+
+# Rmd file
+
+```{fold}
+bruin@c7 ~ $ cat /etc/centos-release
+CentOS Linux release 7.4.1708 (Core)
+bruin@c7 ~ $
+```
+
